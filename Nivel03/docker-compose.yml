@@ -1,0 +1,44 @@
+version: '3'
+services:
+  nicaventasdb:
+    image: postgres:latest
+    restart: always
+    container_name: "nicaventasdb"
+    environment:
+      - POSTGRES_DB=nicaventasdbx
+      - POSTGRES_USER=postgres      
+      - POSTGRES_PASSWORD=postgres      
+    ports:
+      - "54320:5432"
+  nicaventasapp:
+    depends_on:
+      - nicaventasdb
+    image: itihell/nicaventasapp3:latest
+    #image: nicaventasapp2
+    restart: always
+    container_name: "nicaventasapp"
+    #build:
+    #  context: ./Flask
+    #  dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - WAIT_HOSTS= nicaventasdb:5432
+      - REDIS_PORT=6379
+      - REDIS_LOCATION=redis
+      - FLASK_DEBUG=1s
+      - FLASK_APP=app.py
+      - BEARER=2234hj234h2kkjjh42kjj2b20asd6918
+      - DATABASE_PASSWORD=postgres
+      - DATABASE_NAME=nicaventasdbx
+      - DATABASE_USER=postgres
+      - DATABASE_HOST=nicaventasdb
+    #command: flask run --host=0.0.0.0
+    entrypoint: ["python", "app.py","runserver"]
+
+  redis:
+    image: redis
+    expose:
+      - 6379
+
+
